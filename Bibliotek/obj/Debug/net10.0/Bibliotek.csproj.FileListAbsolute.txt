@@ -1,0 +1,14 @@
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.GeneratedMSBuildEditorConfig.editorconfig
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.AssemblyInfoInputs.cache
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.AssemblyInfo.cs
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.csproj.CoreCompileInputs.cache
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/bin/Debug/net10.0/Bibliotek
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/bin/Debug/net10.0/Bibliotek.deps.json
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/bin/Debug/net10.0/Bibliotek.runtimeconfig.json
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/bin/Debug/net10.0/Bibliotek.dll
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/bin/Debug/net10.0/Bibliotek.pdb
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.dll
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/refint/Bibliotek.dll
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.pdb
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.genruntimeconfig.cache
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/ref/Bibliotek.dll
