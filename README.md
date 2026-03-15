@@ -1,3 +1,6 @@
+Jeg aner ikke hvorfor det ble lagd en mappe kalt .idea/idea.Bibliotek/.idea, men jeg tørr ikke å fjerne den i tilfelle det ødelegger noe
+
+
 OBLIGATORISK OPPGAVE 1 I IS-110
 UNIVERSITETSSYSTEM I C#
 
