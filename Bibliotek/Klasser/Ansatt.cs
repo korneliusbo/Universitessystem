@@ -1,8 +1,10 @@
+// Ansatt.cs
 namespace Bibliotek.Klasser;
 
 // Lager klassen Ansatt som child av Bruker-klassen
 public class Ansatt : Bruker 
 {
+    // Egenskaper til Ansatt
     public string Stilling { get; set; }
     public string Avdeling { get; set; }
     

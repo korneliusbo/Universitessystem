@@ -1,3 +1,4 @@
+// Bok.cs
 using Bibliotek.Interface;
 
 namespace Bibliotek.Klasser;
@@ -5,7 +6,7 @@ namespace Bibliotek.Klasser;
 // Setter Bok.cs som child av ILånbar Interface
 public class Bok : ILånbar
 {
-    // Setter hvilke info hver bok skal ha
+    // Egenskaper til bok
     public string Tittel { get; set; }
     public string Forfatter { get; set; }
     public int ErTilgjengelig { get; set; }
@@ -23,7 +24,11 @@ public class Bok : ILånbar
 
     }
 
+    
+    
     // Funksjon for å låne ut bok fra biblioteket. Trekker fra 1 fra ErTilgjengelig og legger til 1 i ErUtlånt
+    
+    // har bruker objekt som parameter
     public bool LånUt(Bruker bruker)
     {
         if (ErTilgjengelig > 0)

@@ -1,10 +1,10 @@
+//Student.cs
 namespace Bibliotek.Klasser;
 
 // Lager klassen Student, som child av Bruker-Klassen
 public class Student : Bruker
 {
-    /* StudentId bruker string isteden for integer for at tallet skal skrives ut med alle siffer selv om det starter på 0.
-     Det gjør ikke noe for programmet siden student iden aldri vil endres og ikke skal gjøres regning med*/
+    // Egenskaper til Student klassen
     public string StudentId { get; set; }
 
     public List<Kurs> Kurs { get; set; } = new List<Kurs>();

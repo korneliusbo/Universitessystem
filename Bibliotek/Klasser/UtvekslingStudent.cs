@@ -1,7 +1,10 @@
+// UtveklslingStudent.cs
 namespace Bibliotek.Klasser;
 
+// child av student => child av bruker
 public class UtvekslingStudent : Student
 {
+    // properties
     public string Hjemuniversitet { get; set; }
     public string Land { get; set; }
     public DateOnly PeriodeFra { get; set; }

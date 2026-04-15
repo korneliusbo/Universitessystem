@@ -12,3 +12,4 @@
 /Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.pdb
 /Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.genruntimeconfig.cache
 /Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/ref/Bibliotek.dll
+/Users/kornelius/RiderProjects/Bibliotek/Bibliotek/obj/Debug/net10.0/Bibliotek.sourcelink.json

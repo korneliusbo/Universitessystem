@@ -1,4 +1,5 @@
-﻿using Bibliotek.Klasser;
+﻿//Program.cs
+using Bibliotek.Klasser;
 using Bibliotek.DataPlaceholders;
 
 // Hent testdata fra DataSeeder
@@ -10,6 +11,10 @@ alleStudenter.AddRange(studentListe);
 alleStudenter.AddRange(uStudentListe);
 List<Ansatt> ansattListe = DataSeeder.TestAnsatte();
 List<Bok> bokListe = DataSeeder.TestBøker();
+List<Bruker> alleBrukere = new List<Bruker>();
+alleBrukere.AddRange(alleStudenter);
+alleBrukere.AddRange(ansattListe);
+Bruker innloggetBruker = null;
 
 // Hjelpefunksjon for å hindre blanke inputs
 string LesBrukerInput(string melding)
@@ -32,73 +37,281 @@ Bruker FinnBruker(string id)
            ?? (Bruker)ansattListe.FirstOrDefault(a => a.AnsattId == id);
 }
 
+// ENHETSTESTER
+Bibliotek.Tester.Enhetstester.KjørTester();
+
+
+// Login-meny
+bool gyldigInnlogging = false;
+Console.WriteLine("--- Universitet placeholder ---");
+Console.WriteLine("Ønsker du å logge inn eller ønsker du å registrere deg?");
+Console.WriteLine("[1] Login\n[2] Registrer ny bruker");
+string loginEllerRegistrer = Console.ReadLine();
+
+while (!gyldigInnlogging)
+{
+    switch (loginEllerRegistrer)
+    {
+        case "1":
+        {
+            string brukernavn = LesBrukerInput("Brukernavn: ");
+            string passord = LesBrukerInput("Passord: ");
+
+            innloggetBruker = alleBrukere.FirstOrDefault(b => b.Epost.Split('@')[0] == brukernavn && b.SjekkPassord(passord));
+
+            if (innloggetBruker == null)
+            {
+                Console.WriteLine("Feil brukernavn eller passord!");
+                break;
+            }
+            else
+            {
+                Console.WriteLine($"Velkommen, {innloggetBruker.Navn}! Brukertype: {innloggetBruker.Rolle}");
+                gyldigInnlogging = true;
+                break;
+
+            }
+        }
+        // Registrere ny bruker
+        case "2":
+        {
+            // Navn og passord
+            Console.WriteLine("Registrer ny bruker");
+            string forNavn = LesBrukerInput("Fornavn: ");
+            string etterNavn = LesBrukerInput("Etternavn: ");
+            string passord = LesBrukerInput("Personlig passord: NB! Ikke del passordet ditt med andre!: ");
+            
+            // Generere email og brukernavn utifra navn
+            string generertEpost = $"{forNavn.ToLower()}.{etterNavn.ToLower()}@uia.no";
+            Console.WriteLine($"Din epost blir: {generertEpost}");
+            
+            if (alleBrukere.Any(b => b.Epost == generertEpost))
+            {
+                Console.WriteLine("En bruker med denne eposten finnes allerede!");
+                int tall = 1;
+                while (alleBrukere.Any(b => b.Epost == generertEpost))
+                {
+
+                    generertEpost = $"{forNavn.ToLower()}.{etterNavn.ToLower()}{tall}@uia.no";
+                    tall++;
+                }
+                Console.WriteLine($"Din epost blir isteden: {generertEpost}");
+            }
+            // Rolle
+            Console.WriteLine($"Hvilken stilling har du?");
+            var roller = Enum.GetValues<Rolle>();
+            foreach (var rolle in roller)
+            {
+                Console.WriteLine($"  [{(int)rolle}] {rolle}");
+            }
+            var valgtStilling = LesBrukerInput("");
+            //Her vil jeg hente ut valgt Rolle fra Enum rolle som en string. så hvis brukeren har skrevet 0 for student så skal valgtStilling = "student"
+            
+            
+            switch (valgtStilling)
+            {
+                case "0":
+                {
+                    Rolle rolle = (Rolle)int.Parse(valgtStilling);
+                    Console.WriteLine("Lager din studentID. Vennligst vent...");
+                    Thread.Sleep(2000);
+
+                    int idNummer = 1;
+                    while (alleStudenter.Any(b => b.StudentId == idNummer.ToString().PadLeft(6, '0')))
+                    {
+                        idNummer++;
+                    }
+
+                    string generertStudentId = idNummer.ToString().PadLeft(6, '0');
+                    
+                    Console.WriteLine($"Oppsummering: \n" +
+                                      $"Navn: {forNavn} {etterNavn}\n" +
+                                      $"Epost: {generertEpost}\n" +
+                                      $"StudentId: {generertStudentId}\n" +
+                                      $"Stilling: {rolle}");
+
+                    var fullførRegistrering = LesBrukerInput("\nFullfør registrering? y/n\n");
+                    switch (fullførRegistrering)
+                    {
+                        case "y":
+                        {
+                            var nyStudent = new Student { Navn = $"{forNavn} {etterNavn}", Epost = generertEpost, Passord = passord, StudentId = generertStudentId, Rolle = rolle };
+                            alleStudenter.Add(nyStudent);
+                            alleBrukere.Add(nyStudent);
+                            loginEllerRegistrer = "1";
+                            break;
+                        }
+                        case "n":
+                        {
+                            Console.WriteLine("Avbrutt.");
+                            break;
+                        }
+                    }
+                    
+                    break;
+                }
+                case "1":
+                case "2":
+                case "3":
+                {
+                    Rolle rolle = (Rolle)int.Parse(valgtStilling);
+                    Console.WriteLine("Lager din AnsattID. Vennligst vent...");
+                    Thread.Sleep(2000);
+                    
+                    int idNummer = 1;
+                    while (ansattListe.Any(b => b.AnsattId == idNummer.ToString().PadLeft(6, '1')))
+                    {
+                        idNummer++;
+                    }
+
+                    string generertStudentId = idNummer.ToString().PadLeft(6, '1');
+                    
+                    Console.WriteLine($"Oppsummering: \n" +
+                                      $"Navn: {forNavn} {etterNavn}\n" +
+                                      $"Epost: {generertEpost}\n" +
+                                      $"AnsattId: {generertStudentId}\n" +
+                                      $"Stilling: {rolle}");
+                    var fullførRegistrering = LesBrukerInput("\nFullfør registrering? y/n\n");
+                    switch (fullførRegistrering)
+                    {
+                        case "y":
+                        {
+                            var nyAnsatt = new Ansatt { Navn = $"{forNavn} {etterNavn}", Epost = generertEpost, Passord = passord, AnsattId = generertStudentId, Rolle = rolle };
+                            ansattListe.Add(nyAnsatt);
+                            alleBrukere.Add(nyAnsatt);
+                            loginEllerRegistrer = "1";
+                            break;
+                        }
+                        case "n":
+                        {
+                            Console.WriteLine("Avbrutt.");
+                            break;
+                        }
+                    }
+                    
+                    break;
+                }
+                    
+            }
+
+            break;
+        }
+            
+    }
+}
+
 // Hovedmeny -starter ui programmet
+ 
 bool kjører = true;
 while (kjører)
+    
 {
     Console.WriteLine("\n--- Universitetssystem ---");
-    Console.WriteLine("[1] Opprett et nytt kurs");
-    Console.WriteLine("[2] Meld student på/av kurs");
+    Console.WriteLine($"Bruker: [{innloggetBruker.Navn}]");
+
+    if (innloggetBruker.Rolle == Rolle.Faglærer || innloggetBruker.Rolle == Rolle.Administrasjon)
+        Console.WriteLine("[1] Opprett et nytt kurs");
+
+    if (innloggetBruker.Rolle == Rolle.Student || innloggetBruker.Rolle == Rolle.Faglærer)
+        Console.WriteLine("[2] Meld student på/av kurs");
+
     Console.WriteLine("[3] Print kurs og deltagere");
     Console.WriteLine("[4] Søk på kurs");
     Console.WriteLine("[5] Søk på bok");
-    Console.WriteLine("[6] Lån bok");
-    Console.WriteLine("[7] Returner bok");
-    Console.WriteLine("[8] Registrer bok");
+
+    if (innloggetBruker.Rolle == Rolle.Student || innloggetBruker.Rolle == Rolle.Faglærer)
+        Console.WriteLine("[6] Lån bok");
+
+    if (innloggetBruker.Rolle == Rolle.Student || innloggetBruker.Rolle == Rolle.Faglærer)
+        Console.WriteLine("[7] Returner bok");
+
+    if (innloggetBruker.Rolle == Rolle.Bibliotekar)
+        Console.WriteLine("[8] Registrer bok");
+    
+    if (innloggetBruker.Rolle == Rolle.Faglærer)
+        Console.WriteLine("[9] Sette karakter");
+
+    if (innloggetBruker.Rolle == Rolle.Student)
+        Console.WriteLine("[10] Se egne kurs med karakterer");
+    
+    if (innloggetBruker.Rolle == Rolle.Faglærer)
+        Console.WriteLine("[11] sette pensum til kurs");
+    
     Console.WriteLine("[0] Avslutt");
-    Console.Write("\nVelg: ");
 
     string valg = Console.ReadLine();
 
     switch (valg)
     {
+        // Oppretting av kurs
         case "1":
         {
-            Console.WriteLine("\n--- Opprett kurs ---");
-            // Definerer variablene som må fylles ut for å legge til et nytt kurs i listen
-            string kursId = "";
-            string kursNavn = "";
-            double studiepoeng = 0;
-            int maksPlasser = 0;
-
-            // Lar brukeren skrive inn Kursets id, navn, studiepoeng og hvor mange studenter den kan romme
-            Console.Write("Kurs ID: ");
-            kursId = Console.ReadLine();
-
-            Console.Write("Kurs navn: ");
-            kursNavn = Console.ReadLine();
-
-            Console.Write("Studiepoeng: ");
-            studiepoeng = double.Parse(Console.ReadLine());
-
-            Console.Write("Maks plasser: ");
-            maksPlasser = int.Parse(Console.ReadLine());
-
-            Console.WriteLine($"\nOpprett kurset '{kursNavn}' ({kursId}), {studiepoeng} stp, {maksPlasser} plasser? y/n");
-            string confirm = Console.ReadLine();
-
-           // gir brukeren mulighet til å avbryte
-            if (confirm == "y")
+            // Passer på at brukeren må være faglærer eller i administrasjon
+            if (innloggetBruker.Rolle != Rolle.Faglærer || innloggetBruker.Rolle != Rolle.Administrasjon)
             {
-                // legger det nye kurset til i kursListe
-                kursListe.Add(new Kurs(kursId, kursNavn, studiepoeng, maksPlasser));
-                Console.WriteLine("Kurs opprettet!");
+                Console.WriteLine("Du har ikke rettighet til å gjøre endringer her.");
+                break;
             }
             else
             {
-                Console.Beep();
-                Console.WriteLine("Avbrutt.");
-            }
+                Console.WriteLine("\n--- Opprett kurs ---");
+                // Definerer variablene som må fylles ut for å legge til et nytt kurs i listen
+                string kursId = "";
+                string kursNavn = "";
+                double studiepoeng = 0;
+                int maksPlasser = 0;
 
-            // en liten pause før brukeren går tilbake til hovedmenyen for å ikke disorientere brukeren
-            Console.WriteLine("\nTrykk Enter for å fortsette...");
-            Console.ReadLine();
-            break;
+                // Lar brukeren skrive inn Kursets id, navn, studiepoeng og hvor mange studenter den kan romme
+                Console.Write("Kurs ID: ");
+                kursId = Console.ReadLine();
+
+                Console.Write("Kurs navn: ");
+                kursNavn = Console.ReadLine();
+
+                Console.Write("Studiepoeng: ");
+                studiepoeng = double.Parse(Console.ReadLine());
+
+                Console.Write("Maks plasser: ");
+                maksPlasser = int.Parse(Console.ReadLine());
+
+                Console.WriteLine(
+                    $"\nOpprett kurset '{kursNavn}' ({kursId}), {studiepoeng} stp, {maksPlasser} plasser? y/n");
+                string confirm = Console.ReadLine();
+
+                // gir brukeren mulighet til å avbryte
+                if (confirm == "y")
+                {
+                    // legger det nye kurset til i kursListe
+                    if (kursListe.Any(k => k.KursId.Equals(kursId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Console.WriteLine($"FEIL: Kurskode {kursId} eksisterer allerede!");
+                    }
+                    else
+                    {
+                        kursListe.Add(new Kurs(kursId, kursNavn, studiepoeng, maksPlasser));
+                        Console.WriteLine("Kurs opprettet!");
+                    }
+                }
+                else
+                {
+                    Console.Beep();
+                    Console.WriteLine("Avbrutt.");
+                }
+
+                // en liten pause før brukeren går tilbake til hovedmenyen for å ikke disorientere brukeren
+                Console.WriteLine("\nTrykk Enter for å fortsette...");
+                Console.ReadLine();
+                break;
+            }
         }
+        // Melde av/på kurs
         case "2":
-            // TODO: Meld student av eller på kurs
-            
             Console.Beep();
+            if (innloggetBruker.Rolle == Rolle.Student)
+            {
+               
+            }
+            
             string studentId = LesBrukerInput("Student ID: ");
     
             // Ser om studentId fra LesBrukerInput er gyldig ved å hente studentId fra Alle studenter listen
@@ -253,7 +466,6 @@ while (kjører)
             break;
 
         case "4":
-            // TODO: Søk på kurs
             Console.WriteLine("Du har valgt å søke etter kurs i systemet.\nSøk etter kursets navn eller kursID: ");
             
             // Tar brukerens input
@@ -281,7 +493,6 @@ while (kjører)
             break;
 
         case "5":
-            // TODO: Søk på bok
             
             Console.WriteLine("Du har valgt å søke etter en bok i systemet.\nSøk etter bokens navn eller bokens ISBN: ");
             
@@ -309,7 +520,7 @@ while (kjører)
             break;
 
         case "6":
-            // TODO: Lån bok
+
             string brukerId = LesBrukerInput("Student/Ansatt ID: ");
             var bruker = FinnBruker(brukerId);
 
@@ -380,7 +591,7 @@ while (kjører)
             break;
 
         case "7":
-            // TODO: Returner bok
+  
             string returBruker = LesBrukerInput("Student/Ansatt ID: ");
             var returBrukeren = FinnBruker(returBruker);
 
@@ -450,7 +661,7 @@ while (kjører)
             break;
 
         case "8":
-            // TODO: Registrer bok
+
             Console.WriteLine("\n--- Registrer ny Bok ---");
             // Definerer variablene som må fylles ut for å legge til et nytt kurs i listen
             string bokTittel = "";
@@ -488,6 +699,103 @@ while (kjører)
             }
             
             Console.WriteLine("\nTrykk Enter for å fortsette...");
+            Console.ReadLine();
+            break;
+        
+        case "9":
+            // Tilgangskontroll
+            if (innloggetBruker.Rolle != Rolle.Faglærer)
+            {
+                Console.WriteLine("Kun faglærere kan sette karakterer.");
+                break;
+            }
+
+            Console.WriteLine("\n--- Sett karakter ---");
+
+            // Skriver ut alle kursene (burde bare skrevet ut kursene faglærer underviser i, men vi får se om jeg gidder)
+            foreach (var k in kursListe)
+            {
+                Console.WriteLine($"[{k.KursId}] {k.KursName}");
+            }
+
+            string valgtKursId = LesBrukerInput("Skriv Kurs ID: ");
+            var kursObjekt = kursListe.FirstOrDefault(k => k.KursId.Equals(valgtKursId, StringComparison.OrdinalIgnoreCase));
+
+            if (kursObjekt == null)
+            {
+                Console.WriteLine("Fant ikke kurset.");
+                break;
+            }
+
+            // Sjekk om det er studenter i kurset
+            if (kursObjekt.Påmeldte.Count == 0)
+            {
+                Console.WriteLine("Det er ingen studenter påmeldt dette kurset.");
+                break;
+            }
+
+            // 4. Velg student fra kurset
+            Console.WriteLine($"\nStudenter i {kursObjekt.KursName}:");
+            foreach (var stud in kursObjekt.Påmeldte)
+            {
+                Console.WriteLine($"- [{stud.StudentId}] {stud.Navn}");
+            }
+
+            string valgtStudentId = LesBrukerInput("Skriv Student ID for å sette karakter: ");
+            var studentObjekt = kursObjekt.Påmeldte.FirstOrDefault(s => s.StudentId == valgtStudentId);
+
+            if (studentObjekt == null)
+            {
+                Console.WriteLine("Denne studenten er ikke påmeldt kurset.");
+                break;
+            }
+
+            // 5. Sett karakter
+            string karakter = LesBrukerInput($"Sett karakter for {studentObjekt.Navn} (A-F): ").ToUpper();
+    
+            // Lagre i kursets dictionary
+            kursObjekt.Karakterer[studentObjekt.StudentId] = karakter;
+
+            Console.WriteLine($"Suksess: {studentObjekt.Navn} fikk karakteren {karakter} i {kursObjekt.KursName}.");
+            Console.WriteLine("Trykk Enter for å fortsette...");
+            Console.ReadLine();
+            break;
+        
+        // Se kurs student-brukeren er meldt opp på og karakterer
+        case "10":
+            if (innloggetBruker is Student studente)
+            {
+                Console.WriteLine($"\nKurs og karakterer for {studente.Navn}:");
+        
+                if (!studente.Kurs.Any())
+                {
+                    Console.WriteLine("Ingen kurs registrert.");
+                }
+                else
+                {
+                    foreach (var k in studente.Kurs)
+                    {
+                        // Henter karakter hvis den finnes, ellers viser den "-" - fy fillen c# e kresen på kæ an godtar ass
+                        string karaktere = k.Karakterer.TryGetValue(studente.StudentId, out var v) ? v : "-";
+                        Console.WriteLine($"- {k.KursId}: {k.KursName} | Karakter: {karaktere}");
+                    }
+                }
+            }
+            Console.ReadLine();
+            break;
+        
+        case "11":
+            if (innloggetBruker.Rolle != Rolle.Faglærer) break;
+    
+            string kId = LesBrukerInput("Kurs ID: ");
+            var kObj = kursListe.FirstOrDefault(k => k.KursId == kId);
+            string bIsbn = LesBrukerInput("Bokens ISBN for pensum: ");
+            var bObj = bokListe.FirstOrDefault(b => b.Isbn == bIsbn);
+
+            if (kObj != null && bObj != null) {
+                kObj.Pensum.Add(bObj);
+                Console.WriteLine($"{bObj.Tittel} er nå pensum i {kObj.KursName}");
+            }
             Console.ReadLine();
             break;
 

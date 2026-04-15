@@ -1,3 +1,4 @@
+// Kurs.cs
 namespace Bibliotek.Klasser;
 
 public class Kurs
@@ -9,6 +10,12 @@ public class Kurs
     public int MaksPlasser { get; set; }
     public List<Student> Påmeldte { get; set; } = new List<Student>();
     
+    // Pensumliste og Karakterer
+    public List<Bok> Pensum { get; set; } = new List<Bok>();
+    public Dictionary<string, string> Karakterer { get; set; } = new Dictionary<string, string>(); 
+    // Key = StudentId, Value = Karakter (A-F)
+
+    public string FaglærerId { get; set; } // For å sjekke hvem som underviser
     // Konstruktør
     public Kurs(string kursId, string kursName, double studiepoeng, int maksPlasser)
     {
