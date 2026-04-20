@@ -1,6 +1,7 @@
 // Bruker.cs
 namespace Bibliotek.Klasser;
 
+// Lager read only constants
 public enum Rolle {Student, Faglærer, Bibliotekar, Administrasjon}
 
 // Lager den abstrakte klassen bruker, som Ansatt- og Student-klassen vil arve fra

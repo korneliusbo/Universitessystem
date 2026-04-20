@@ -25,6 +25,7 @@ public class Enhetstester
         var student = new Student { Navn = "Test", StudentId = "999" };
         var kurs = new Kurs("TEST101", "Testkurs", 10, 10);
         
+        // Legger først til kurs på studenten, og sjekker dermed om det er mulig å legge til kurs igjen.
         student.Kurs.Add(kurs);
         bool kanLeggeTilIgjen = !student.Kurs.Any(k => k.KursId == "TEST101");
         
